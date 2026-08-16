@@ -482,7 +482,7 @@
       document.getElementById('certsCatalog').classList.remove('hidden');
 
       if (result.passed) {
-        alert(`🎉 PASSED! Score: ${result.score_percentage}%\nCertificate ID: ${result.certificate_id}`);
+        alert(`🎉 PASSED! Score: ${result.score_percentage}%\nCertification Record ID: ${result.certificate_id}`);
       } else {
         alert(`❌ FAILED: ${result.failure_reason}`);
       }
@@ -503,7 +503,7 @@
 
       const result = await res.json();
       if (result.passed) {
-        alert(`🤖 AI Auto-Completion Success! Score: ${result.score_percentage}%\nCertificate ID: ${result.certificate_id}`);
+        alert(`🤖 AI Auto-Completion Success! Score: ${result.score_percentage}%\nCertification Record ID: ${result.certificate_id}`);
       } else {
         alert(`Auto-completion failed: ${result.failure_reason}`);
       }
@@ -525,11 +525,9 @@
         <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex justify-between items-center text-xs">
           <div>
             <div class="font-bold text-emerald-900">${c.certification_title}</div>
-            <div class="text-[11px] text-emerald-700">ID: ${c.certificate_id} | Score: ${c.score_achieved}% (60 MCQ Timed)</div>
+            <div class="text-[11px] text-emerald-700">Record ID: ${c.certificate_id} | Score: ${c.score_achieved}% (60 MCQ Timed)</div>
           </div>
-          <a href="/api/reports/certificate/${c.certificate_id}/printable" target="_blank" class="bg-emerald-600 text-white font-semibold px-3 py-1.5 rounded hover:bg-emerald-700 flex items-center gap-1">
-            <i class="fa-solid fa-print"></i> View Certificate
-          </a>
+          <span class="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded">VERIFIED & COMPLETED</span>
         </div>
       `).join('');
     }
@@ -559,7 +557,7 @@
               ${resume.verified_certifications.map(c => `
                 <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs">
                   <div class="font-bold text-slate-800">${c.title} <span class="text-emerald-600 font-normal">(${c.status})</span></div>
-                  <div class="text-slate-500 text-[11px]">ID: ${c.certificate_id} | Score: ${c.score_achieved}</div>
+                  <div class="text-slate-500 text-[11px]">Record ID: ${c.certificate_id} | Score: ${c.score_achieved}</div>
                 </div>
               `).join('')}
             </div>
