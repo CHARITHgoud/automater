@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CertiHub - Information Gathering & Automated Certification Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .active-nav { background-color: #1e293b; color: #ffffff; font-weight: 600; }
+    .timer-badge { font-family: monospace; }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- TOP NAVBAR -->
+  <header class="bg-slate-900 text-white shadow-md">
+    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="bg-blue-600 p-2 rounded-lg text-white">
+          <i class="fa-solid fa-award text-2xl"></i>
+        </div>
+        <div>
+          <h1 class="text-xl font-bold tracking-wide">CertiHub App</h1>
+          <p class="text-xs text-slate-400">Info Intelligence & 60 MCQ Exam Engine</p>
+        </div>
+      </div>
+      <!-- Profile Selector -->
+      <div class="flex items-center space-x-3 bg-slate-800 px-3 py-1.5 rounded-lg border border-slate-700">
+        <i class="fa-solid fa-user-circle text-blue-400 text-lg"></i>
+        <span class="text-xs text-slate-400">Active Profile:</span>
+        <select id="activeProfileSelect" onchange="onActiveProfileChange()" class="bg-slate-900 text-white text-sm font-semibold rounded px-2 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500">
+          <option value="">Loading profiles...</option>
+        </select>
+      </div>
+    </div>
+  </header>
+
+  <div class="max-w-7xl mx-auto px-4 py-6 flex-1 w-full flex flex-col md:flex-row gap-6">
+
+    <!-- NAVIGATION DASHBOARD SIDEBAR (Function Selector) -->
+    <aside class="w-full md:w-64 bg-white rounded-xl shadow-sm border border-slate-200 p-4 shrink-0 flex flex-col justify-between">
+      <div>
+        <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 px-2">Main Functions</h2>
+        <nav class="space-y-1">
+          <button id="nav-info" onclick="switchTab('info')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center space-x-3 transition active-nav">
+            <i class="fa-solid fa-user-gear w-5 text-center text-blue-500"></i>
+            <span>1. Info Gatherer</span>
+          </button>
+          <button id="nav-certs" onclick="switchTab('certs')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center space-x-3 transition hover:bg-slate-100">
+            <i class="fa-solid fa-graduation-cap w-5 text-center text-emerald-500"></i>
+            <span>2. Certifications & Exam</span>
+          </button>
+          <button id="nav-resume" onclick="switchTab('resume')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center space-x-3 transition hover:bg-slate-100">
+            <i class="fa-solid fa-file-invoice w-5 text-center text-purple-500"></i>
+            <span>3. Resume Generator</span>
+          </button>
+          <button id="nav-dossier" onclick="switchTab('dossier')" class="w-full text-left px-3 py-2.5 rounded-lg text-sm flex items-center space-x-3 transition hover:bg-slate-100">
+            <i class="fa-solid fa-folder-open w-5 text-center text-amber-500"></i>
+            <span>4. Dossiers & Reports</span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="mt-8 p-3 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-500">
+        <p class="font-semibold text-slate-700 mb-1"><i class="fa-solid fa-shield-halved text-blue-600 mr-1"></i> Exam Rules:</p>
+        <ul class="list-disc list-inside space-y-1">
+          <li>60 MCQ Questions</li>
+          <li>80-Minute Countdown</li>
+          <li>Min score: 80% to pass</li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- MAIN DASHBOARD CONTENT AREA -->
+    <main class="flex-1 bg-white rounded-xl shadow-sm border border-slate-200 p-6 min-h-[600px]">
+
+      <!-- TAB 1: INFORMATION GATHERER -->
+      <section id="tab-info" class="space-y-6">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Information Gatherer</h2>
+            <p class="text-sm text-slate-500">Gather, store, and manage comprehensive intelligence on people or entities.</p>
+          </div>
+          <button onclick="openProfileModal()" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2 shadow-sm">
+            <i class="fa-solid fa-plus"></i> Add Person / Entity
+          </button>
+        </div>
+
+        <div id="profilesList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Profiles dynamically injected -->
+        </div>
+      </section>
+
+      <!-- TAB 2: CERTIFICATIONS & 60 MCQ EXAM CENTER -->
+      <section id="tab-certs" class="space-y-6 hidden">
+        <div class="border-b border-slate-100 pb-4">
+          <h2 class="text-xl font-bold text-slate-900">Certification Center</h2>
+          <p class="text-sm text-slate-500">Take timed 60 MCQ assessments (80-min timer, 80% pass score) or run AI Auto-Completion.</p>
+        </div>
+
+        <div id="examContainer" class="hidden">
+          <!-- Active Exam UI -->
+        </div>
+
+        <div id="certsCatalog" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Certification Cards injected -->
+        </div>
+
+        <div class="mt-8 border-t border-slate-200 pt-6">
+          <h3 class="text-lg font-bold text-slate-900 mb-4">Earned Certifications for Selected Profile</h3>
+          <div id="earnedCertsList" class="space-y-3">
+            <!-- Earned certs injected -->
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: RESUME GENERATOR -->
+      <section id="tab-resume" class="space-y-6 hidden">
+        <div class="flex justify-between items-center border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Resume Generator</h2>
+            <p class="text-sm text-slate-500">Auto-generates a professional resume integrating all gathered profile information and verified certifications.</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="downloadTextResume()" class="bg-slate-800 hover:bg-slate-900 text-white text-sm px-3 py-2 rounded-lg flex items-center gap-2">
+              <i class="fa-solid fa-download"></i> Export Markdown
+            </button>
+          </div>
+        </div>
+
+        <div id="resumePreview" class="bg-slate-50 border border-slate-200 rounded-xl p-6 font-sans space-y-6">
+          <!-- Resume content injected -->
+        </div>
+      </section>
+
+      <!-- TAB 4: DOSSIERS & REPORTS -->
+      <section id="tab-dossier" class="space-y-6 hidden">
+        <div class="border-b border-slate-100 pb-4">
+          <h2 class="text-xl font-bold text-slate-900">Entity Dossiers & Audit Reports</h2>
+          <p class="text-sm text-slate-500">Comprehensive summary of profile records, earned certificates, and complete exam logs.</p>
+        </div>
+
+        <div id="dossierContent" class="space-y-6">
+          <!-- Dossier injected -->
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- PROFILE MODAL -->
+  <div id="profileModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-white rounded-xl shadow-xl max-w-lg w-full p-6 space-y-4">
+      <h3 id="modalTitle" class="text-lg font-bold text-slate-900">Add New Person / Entity</h3>
+      <input type="hidden" id="editProfileId">
+      <div class="space-y-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Full Name *</label>
+          <input type="text" id="profName" class="w-full border border-slate-300 rounded-lg p-2 text-sm focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g. Jane Doe">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Email</label>
+            <input type="email" id="profEmail" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="jane@example.com">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Phone</label>
+            <input type="text" id="profPhone" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="+1-555-0100">
+          </div>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Job Title / Entity Role</label>
+          <input type="text" id="profTitle" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="e.g. Cybersecurity Lead">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Bio / Intelligence Background</label>
+          <textarea id="profBio" rows="2" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="Key background info..."></textarea>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">Skills (comma separated)</label>
+          <input type="text" id="profSkills" class="w-full border border-slate-300 rounded-lg p-2 text-sm" placeholder="Cybersecurity, Risk Assessment, Python">
+        </div>
+      </div>
+      <div class="flex justify-end gap-3 pt-3 border-t border-slate-100">
+        <button onclick="closeProfileModal()" class="px-4 py-2 text-sm text-slate-600 hover:bg-slate-100 rounded-lg">Cancel</button>
+        <button onclick="saveProfile()" class="px-4 py-2 text-sm bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700">Save Profile</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let activeProfileId = null;
+    let profiles = [];
+    let certifications = [];
+    let currentExam = null;
+    let examTimerInterval = null;
+    let examSecondsRemaining = 80 * 60; // 80 mins
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      await loadProfiles();
+      await loadCertifications();
+    });
+
+    function switchTab(tab) {
+      ['info', 'certs', 'resume', 'dossier'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        document.getElementById(`nav-${t}`).classList.remove('active-nav');
+      });
+      document.getElementById(`tab-${tab}`).classList.remove('hidden');
+      document.getElementById(`nav-${tab}`).classList.add('active-nav');
+
+      if (tab === 'resume') renderResume();
+      if (tab === 'dossier') renderDossier();
+      if (tab === 'certs') renderEarnedCertifications();
+    }
+
+    async function loadProfiles() {
+      const res = await fetch('/api/profiles');
+      profiles = await res.json();
+
+      const select = document.getElementById('activeProfileSelect');
+      select.innerHTML = '';
+
+      if (profiles.length === 0) {
+        select.innerHTML = '<option value="">No profiles found</option>';
+        activeProfileId = null;
+      } else {
+        profiles.forEach(p => {
+          select.innerHTML += `<option value="${p.id}">${p.name} (${p.title || 'Profile'})</option>`;
+        });
+        if (!activeProfileId || !profiles.find(p => p.id == activeProfileId)) {
+          activeProfileId = profiles[0].id;
+        }
+        select.value = activeProfileId;
+      }
+
+      renderProfilesList();
+    }
+
+    function onActiveProfileChange() {
+      activeProfileId = Number(document.getElementById('activeProfileSelect').value);
+      renderProfilesList();
+      renderEarnedCertifications();
+      renderResume();
+      renderDossier();
+    }
+
+    function renderProfilesList() {
+      const container = document.getElementById('profilesList');
+      if (profiles.length === 0) {
+        container.innerHTML = `<div class="col-span-2 text-center py-12 text-slate-400">No profiles gathered yet. Click "Add Person / Entity" above to start.</div>`;
+        return;
+      }
+
+      container.innerHTML = profiles.map(p => `
+        <div class="border ${p.id == activeProfileId ? 'border-blue-500 bg-blue-50/20 shadow-sm' : 'border-slate-200'} rounded-xl p-4 flex flex-col justify-between space-y-3">
+          <div>
+            <div class="flex justify-between items-start">
+              <div>
+                <h3 class="font-bold text-slate-900">${p.name}</h3>
+                <p class="text-xs text-blue-600 font-medium">${p.title || 'Unspecified Role'}</p>
+              </div>
+              ${p.id == activeProfileId ? '<span class="bg-blue-100 text-blue-700 text-[10px] font-bold px-2 py-0.5 rounded-full">ACTIVE</span>' : ''}
+            </div>
+            <p class="text-xs text-slate-500 mt-2 line-clamp-2">${p.bio || 'No background bio provided.'}</p>
+            <div class="flex flex-wrap gap-1 mt-3">
+              ${(p.skills || []).map(s => `<span class="bg-slate-100 text-slate-600 text-[11px] px-2 py-0.5 rounded">${s}</span>`).join('')}
+            </div>
+          </div>
+          <div class="flex justify-between items-center pt-3 border-t border-slate-100 text-xs">
+            <button onclick="setActiveProfile(${p.id})" class="text-blue-600 font-semibold hover:underline">Select as Active</button>
+            <div class="space-x-2">
+              <button onclick="editProfile(${p.id})" class="text-slate-500 hover:text-slate-800"><i class="fa-solid fa-pen"></i> Edit</button>
+              <button onclick="deleteProfile(${p.id})" class="text-red-500 hover:text-red-700"><i class="fa-solid fa-trash"></i> Delete</button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setActiveProfile(id) {
+      activeProfileId = id;
+      document.getElementById('activeProfileSelect').value = id;
+      renderProfilesList();
+      renderEarnedCertifications();
+    }
+
+    function openProfileModal(isEdit = false) {
+      document.getElementById('profileModal').classList.remove('hidden');
+      document.getElementById('profileModal').classList.add('flex');
+      if (!isEdit) {
+        document.getElementById('modalTitle').innerText = "Add New Person / Entity";
+        document.getElementById('editProfileId').value = "";
+        document.getElementById('profName').value = "";
+        document.getElementById('profEmail').value = "";
+        document.getElementById('profPhone').value = "";
+        document.getElementById('profTitle').value = "";
+        document.getElementById('profBio').value = "";
+        document.getElementById('profSkills').value = "";
+      }
+    }
+
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.add('hidden');
+      document.getElementById('profileModal').classList.remove('flex');
+    }
+
+    function editProfile(id) {
+      const p = profiles.find(item => item.id == id);
+      if (!p) return;
+      document.getElementById('modalTitle').innerText = "Edit Profile";
+      document.getElementById('editProfileId').value = p.id;
+      document.getElementById('profName').value = p.name;
+      document.getElementById('profEmail').value = p.email || '';
+      document.getElementById('profPhone').value = p.phone || '';
+      document.getElementById('profTitle').value = p.title || '';
+      document.getElementById('profBio').value = p.bio || '';
+      document.getElementById('profSkills').value = (p.skills || []).join(', ');
+      openProfileModal(true);
+    }
+
+    async function saveProfile() {
+      const id = document.getElementById('editProfileId').value;
+      const name = document.getElementById('profName').value.trim();
+      if (!name) return alert('Name is required');
+
+      const payload = {
+        name,
+        email: document.getElementById('profEmail').value.trim(),
+        phone: document.getElementById('profPhone').value.trim(),
+        title: document.getElementById('profTitle').value.trim(),
+        bio: document.getElementById('profBio').value.trim(),
+        skills: document.getElementById('profSkills').value.split(',').map(s => s.trim()).filter(Boolean)
+      };
+
+      if (id) {
+        await fetch(`/api/profiles/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+      } else {
+        const res = await fetch('/api/profiles', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const created = await res.json();
+        activeProfileId = created.id;
+      }
+      closeProfileModal();
+      await loadProfiles();
+    }
+
+    async function deleteProfile(id) {
+      if (!confirm('Are you sure you want to delete this profile?')) return;
+      await fetch(`/api/profiles/${id}`, { method: 'DELETE' });
+      await loadProfiles();
+    }
+
+    async function loadCertifications() {
+      const res = await fetch('/api/certifications');
+      certifications = await res.json();
+
+      const catalog = document.getElementById('certsCatalog');
+      catalog.innerHTML = certifications.map(c => `
+        <div class="border border-slate-200 rounded-xl p-5 space-y-4 hover:border-blue-300 transition">
+          <div>
+            <span class="text-[10px] font-bold bg-slate-100 text-slate-600 px-2 py-0.5 rounded tracking-wide uppercase">${c.category}</span>
+            <h3 class="text-base font-bold text-slate-900 mt-2">${c.title}</h3>
+            <p class="text-xs text-slate-500 mt-1">${c.description}</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-lg text-xs space-y-1 text-slate-600">
+            <div><i class="fa-solid fa-list-check text-blue-500 mr-1.5"></i> <strong>60 MCQ Questions</strong></div>
+            <div><i class="fa-solid fa-clock text-amber-500 mr-1.5"></i> <strong>80 Minutes Time Limit</strong></div>
+            <div><i class="fa-solid fa-bullseye text-emerald-500 mr-1.5"></i> <strong>Minimum 80% to Pass</strong></div>
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <button onclick="startExam(${c.id}, false)" class="bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-pen-to-square"></i> Take Test
+            </button>
+            <button onclick="autoCompleteExam(${c.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold py-2 px-3 rounded-lg flex items-center justify-center gap-1.5">
+              <i class="fa-solid fa-robot"></i> Auto-Complete
+            </button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function startExam(certId, isAuto = false) {
+      if (!activeProfileId) return alert('Please select an active profile first.');
+      const cert = certifications.find(c => c.id == certId);
+
+      const res = await fetch(`/api/certifications/${certId}/exam-questions`);
+      const examData = await res.json();
+      currentExam = { ...examData, cert };
+
+      document.getElementById('certsCatalog').classList.add('hidden');
+      const container = document.getElementById('examContainer');
+      container.classList.remove('hidden');
+
+      examSecondsRemaining = 80 * 60; // 80 mins
+      clearInterval(examTimerInterval);
+      examTimerInterval = setInterval(updateExamTimer, 1000);
+
+      renderExamUI();
+    }
+
+    function updateExamTimer() {
+      examSecondsRemaining--;
+      const mins = Math.floor(examSecondsRemaining / 60);
+      const secs = examSecondsRemaining % 60;
+      const timerDisplay = document.getElementById('activeTimer');
+      if (timerDisplay) {
+        timerDisplay.innerText = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }
+      if (examSecondsRemaining <= 0) {
+        clearInterval(examTimerInterval);
+        alert('80 Minutes Time limit reached! Submitting exam automatically.');
+        submitActiveExam();
+      }
+    }
+
+    function renderExamUI() {
+      const container = document.getElementById('examContainer');
+      container.innerHTML = `
+        <div class="bg-slate-900 text-white rounded-xl p-4 mb-6 flex justify-between items-center sticky top-0 z-10 shadow-lg">
+          <div>
+            <h3 class="font-bold text-base">${currentExam.cert.title}</h3>
+            <p class="text-xs text-slate-400">60 MCQ Timed Official Examination</p>
+          </div>
+          <div class="flex items-center gap-4">
+            <div class="bg-slate-800 border border-slate-700 px-3 py-1.5 rounded-lg text-right">
+              <div class="text-[10px] text-amber-400 font-bold uppercase">Time Remaining</div>
+              <div id="activeTimer" class="timer-badge text-lg font-bold text-white">80:00</div>
+            </div>
+            <button onclick="submitActiveExam()" class="bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold px-4 py-2.5 rounded-lg">
+              Submit Exam
+            </button>
+          </div>
+        </div>
+
+        <div class="space-y-6 max-h-[500px] overflow-y-auto pr-2">
+          ${currentExam.questions.map((q, idx) => `
+            <div class="border border-slate-200 rounded-lg p-4 bg-slate-50/50">
+              <p class="font-semibold text-slate-800 text-sm mb-3">${q.question}</p>
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-xs">
+                <label class="flex items-center gap-2 p-2.5 rounded border border-slate-200 bg-white hover:bg-blue-50 cursor-pointer">
+                  <input type="radio" name="q_${q.id}" value="A" class="text-blue-600"> <span><strong>A)</strong> ${q.option_a}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded border border-slate-200 bg-white hover:bg-blue-50 cursor-pointer">
+                  <input type="radio" name="q_${q.id}" value="B" class="text-blue-600"> <span><strong>B)</strong> ${q.option_b}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded border border-slate-200 bg-white hover:bg-blue-50 cursor-pointer">
+                  <input type="radio" name="q_${q.id}" value="C" class="text-blue-600"> <span><strong>C)</strong> ${q.option_c}</span>
+                </label>
+                <label class="flex items-center gap-2 p-2.5 rounded border border-slate-200 bg-white hover:bg-blue-50 cursor-pointer">
+                  <input type="radio" name="q_${q.id}" value="D" class="text-blue-600"> <span><strong>D)</strong> ${q.option_d}</span>
+                </label>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    async function submitActiveExam() {
+      clearInterval(examTimerInterval);
+      const answers = {};
+      currentExam.questions.forEach(q => {
+        const selected = document.querySelector(`input[name="q_${q.id}"]:checked`);
+        if (selected) answers[q.id] = selected.value;
+      });
+
+      const timeTaken = (80 * 60) - examSecondsRemaining;
+
+      const res = await fetch(`/api/certifications/${currentExam.certification_id}/submit-exam`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profile_id: activeProfileId,
+          answers,
+          time_taken_seconds: timeTaken
+        })
+      });
+
+      const result = await res.json();
+      document.getElementById('examContainer').classList.add('hidden');
+      document.getElementById('certsCatalog').classList.remove('hidden');
+
+      if (result.passed) {
+        alert(`🎉 PASSED! Score: ${result.score_percentage}%\nCertificate ID: ${result.certificate_id}`);
+      } else {
+        alert(`❌ FAILED: ${result.failure_reason}`);
+      }
+      renderEarnedCertifications();
+    }
+
+    async function autoCompleteExam(certId) {
+      if (!activeProfileId) return alert('Please select an active profile first.');
+      const res = await fetch(`/api/certifications/${certId}/submit-exam`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          profile_id: activeProfileId,
+          is_auto_complete: true,
+          time_taken_seconds: 1200 // 20 mins
+        })
+      });
+
+      const result = await res.json();
+      if (result.passed) {
+        alert(`🤖 AI Auto-Completion Success! Score: ${result.score_percentage}%\nCertificate ID: ${result.certificate_id}`);
+      } else {
+        alert(`Auto-completion failed: ${result.failure_reason}`);
+      }
+      renderEarnedCertifications();
+    }
+
+    async function renderEarnedCertifications() {
+      if (!activeProfileId) return;
+      const res = await fetch(`/api/certifications/user/${activeProfileId}`);
+      const certs = await res.json();
+
+      const container = document.getElementById('earnedCertsList');
+      if (certs.length === 0) {
+        container.innerHTML = `<p class="text-xs text-slate-400 italic">No verified certifications earned yet for this profile.</p>`;
+        return;
+      }
+
+      container.innerHTML = certs.map(c => `
+        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-lg flex justify-between items-center text-xs">
+          <div>
+            <div class="font-bold text-emerald-900">${c.certification_title}</div>
+            <div class="text-[11px] text-emerald-700">ID: ${c.certificate_id} | Score: ${c.score_achieved}% (60 MCQ Timed)</div>
+          </div>
+          <a href="/api/reports/certificate/${c.certificate_id}/printable" target="_blank" class="bg-emerald-600 text-white font-semibold px-3 py-1.5 rounded hover:bg-emerald-700 flex items-center gap-1">
+            <i class="fa-solid fa-print"></i> View Certificate
+          </a>
+        </div>
+      `).join('');
+    }
+
+    async function renderResume() {
+      if (!activeProfileId) return;
+      const res = await fetch(`/api/resumes/${activeProfileId}`);
+      const resume = await res.json();
+
+      const container = document.getElementById('resumePreview');
+      container.innerHTML = `
+        <div class="border-b border-slate-200 pb-4">
+          <h1 class="text-2xl font-bold text-slate-900">${resume.header.name}</h1>
+          <p class="text-sm font-semibold text-blue-600">${resume.header.title}</p>
+          <p class="text-xs text-slate-500 mt-1">Email: ${resume.header.email || 'N/A'} | Phone: ${resume.header.phone || 'N/A'}</p>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Professional Summary</h3>
+          <p class="text-sm text-slate-700">${resume.header.summary}</p>
+        </div>
+
+        <div>
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Verified Certifications</h3>
+          ${resume.verified_certifications.length === 0 ? '<p class="text-xs text-slate-400">No verified certifications earned yet.</p>' : `
+            <div class="space-y-2">
+              ${resume.verified_certifications.map(c => `
+                <div class="p-2.5 bg-white border border-slate-200 rounded-lg text-xs">
+                  <div class="font-bold text-slate-800">${c.title} <span class="text-emerald-600 font-normal">(${c.status})</span></div>
+                  <div class="text-slate-500 text-[11px]">ID: ${c.certificate_id} | Score: ${c.score_achieved}</div>
+                </div>
+              `).join('')}
+            </div>
+          `}
+        </div>
+
+        <div>
+          <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Skills & Competencies</h3>
+          <div class="flex flex-wrap gap-1.5">
+            ${(resume.skills || []).map(s => `<span class="bg-blue-50 text-blue-700 border border-blue-200 text-xs px-2.5 py-1 rounded-md font-medium">${s}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    async function downloadTextResume() {
+      if (!activeProfileId) return;
+      window.open(`/api/resumes/${activeProfileId}/export/text`, '_blank');
+    }
+
+    async function renderDossier() {
+      if (!activeProfileId) return;
+      const res = await fetch(`/api/reports/dossier/${activeProfileId}`);
+      const dossier = await res.json();
+
+      const container = document.getElementById('dossierContent');
+      container.innerHTML = `
+        <div class="bg-slate-900 text-white p-5 rounded-xl flex justify-between items-center">
+          <div>
+            <div class="text-xs text-blue-400 font-bold uppercase tracking-wider">Entity Intelligence Dossier</div>
+            <h3 class="text-lg font-bold">${dossier.profile_info.name}</h3>
+            <p class="text-xs text-slate-400">${dossier.dossier_id} | Generated: ${new Date(dossier.generated_at).toLocaleString()}</p>
+          </div>
+          <div class="text-right">
+            <span class="bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">${dossier.verified_certifications_summary.total_earned} Certifications</span>
+          </div>
+        </div>
+
+        <div class="border border-slate-200 rounded-xl p-4 bg-slate-50 space-y-3">
+          <h4 class="font-bold text-sm text-slate-800">Exam Attempt Audit Log (60 MCQ Timed Engine)</h4>
+          ${dossier.exam_attempt_audit_trail.length === 0 ? '<p class="text-xs text-slate-400">No exam attempts logged.</p>' : `
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr class="border-b border-slate-200 text-slate-500">
+                    <th class="py-2">Certification</th>
+                    <th class="py-2">Score</th>
+                    <th class="py-2">Duration</th>
+                    <th class="py-2">Result</th>
+                    <th class="py-2">Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-200">
+                  ${dossier.exam_attempt_audit_trail.map(a => `
+                    <tr>
+                      <td class="py-2.5 font-medium">${a.certification_title}</td>
+                      <td class="py-2.5">${a.score_percentage}%</td>
+                      <td class="py-2.5">${Math.floor(a.time_taken_seconds/60)} mins</td>
+                      <td class="py-2.5 font-bold ${a.passed ? 'text-emerald-600' : 'text-red-600'}">${a.passed ? 'PASSED' : 'FAILED'}</td>
+                      <td class="py-2.5 text-slate-400">${new Date(a.attempted_at).toLocaleString()}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          `}
+        </div>
+      `;
+    }
+  </script>
+</body>
+</html>
